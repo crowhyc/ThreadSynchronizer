@@ -39,6 +39,43 @@
             </plugin>
         </plugins>
     </build>
+    <repositories>
+        <repository>
+            <id>kry-nexus</id>
+            <url>http://nexus.shishike.com/nexus/content/repositories/releases/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </repository>
+
+        <repository>
+            <id>kry-nexus-snapshots</id>
+            <url>http://nexus.shishike.com/nexus/content/repositories/snapshots/</url>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+                <checksumPolicy>warn</checksumPolicy>
+            </snapshots>
+        </repository>
+
+        <repository>
+            <id>kry-nexus-releases</id>
+            <url>http://nexus.shishike.com/nexus/content/repositories/releases/</url>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+                <checksumPolicy>warn</checksumPolicy>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>ali-nexus</id>
+            <url>http://maven.aliyun.com/nexus/content/groups/public/</url>
+        </repository>
+        <repository>
+            <id>ali-nexus-public-snapshots</id>
+            <url>http://maven.aliyun.com/nexus/content/repositories/snapshots/</url>
+        </repository>
+    </repositories>
     <profiles>
         <profile>
             <id>local</id>
