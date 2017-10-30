@@ -1,11 +1,12 @@
 package com.javanewb.controller;
 
 import com.javanewb.consts.DefaultValues;
-import com.keruyun.portal.common.configuration.ApplicationContextHolder;
+import com.keruyun.portal.common.filter.LoggerMDCFilter;
 import com.keruyun.portal.common.http.HttpClientComponent;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,9 +36,6 @@ import java.util.concurrent.*;
 @RestController
 @Slf4j
 public class TestController {
-
-    @Autowired
-    private ApplicationContextHolder holder;
     @Autowired
     private HttpClientComponent httpClientComponent;
     ExecutorService executorService = new ThreadPoolExecutor(300, 10000, 10000, TimeUnit.SECONDS, new ArrayBlockingQueue<>(200));
@@ -73,7 +71,7 @@ public class TestController {
     @ApiOperation(value = "请求同步测试", notes = "请求同步测试")
     @RequestMapping(value = "/batch", method = RequestMethod.GET)
     public void batchTest() {
-        for (int i = 0; i < 2000; i++) {
+        for (int i = 0; i < 500; i++) {
             batchService.execute(new BatchTester(i));
         }
     }
@@ -102,6 +100,9 @@ public class TestController {
 
             for (int i = 0; i < 5000; i++) {
                 sum = sum + i;
+                String mdc = MDC.get(LoggerMDCFilter.IDENTIFIER);
+                System.out.println(mdc);
+
             }
             return sum;
         }
