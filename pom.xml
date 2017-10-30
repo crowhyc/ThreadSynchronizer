@@ -37,6 +37,11 @@
                     <target>1.8</target>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>com.keruyun.cloud.infra</groupId>
+                <artifactId>spring-boot-maven-oneapm-plugin</artifactId>
+            </plugin>
+
         </plugins>
     </build>
     <repositories>
@@ -89,7 +94,6 @@
             <properties>
                 <profile.active>test</profile.active>
             </properties>
-
         </profile>
     </profiles>
 </project>
