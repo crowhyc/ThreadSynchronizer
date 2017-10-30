@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration scan="true" debug="false">
+
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+    <property name="LOG_PATH" value="./logs/${project.artifactId}/"/>
+    <property name="LOG_FILE" value="info.log"/>
+    <property name="LOG_ERROR_FILE" value="error.log"/>
+    <property name="PARTNER_FILE" value="partner.log"/>
+    <property name="MVC_FILE" value="mvc.log"/>
+    <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
+    <include resource="org/springframework/boot/logging/logback/file-appender.xml"/>
+    <!--<root level="INFO">-->
+    <!--<appender-ref ref="CONSOLE"/>-->
+    <!--<appender-ref ref="FILE"/>-->
+    <!--</root>-->
+
+    <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
+        <!--<withJansi>true</withJansi>-->
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %level %X{IDENTIFIER}%thread %X{URI} %logger[%method:%line] - %msg%n
+            </pattern>
+            <!--<pattern>${CONSOLE_PATTERN}</pattern>-->
+            <charset>utf8</charset>
+        </encoder>
+    </appender>
+    <appender name="LogFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>${LOG_PATH}/${LOG_FILE}</File>
+        <Append>true</Append>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %level %X{IDENTIFIER}%thread %X{URI} %logger[%method:%line] - %msg%n
+            </pattern>
+            <charset>utf8</charset>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>DEBUG</level>
+        </filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/${LOG_FILE}.%d{yyyy-MM-dd }</fileNamePattern>
+        </rollingPolicy>
+    </appender>
+    <appender name="ErrorFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>${LOG_PATH}/${LOG_ERROR_FILE}</File>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %level %X{IDENTIFIER}%thread %X{URI} %logger[%method:%line] - %msg%n
+            </pattern>
+            <charset>utf8</charset>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>ERROR</level>
+        </filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/${LOG_ERROR_FILE}.%d{yyyy-MM-dd }</fileNamePattern>
+        </rollingPolicy>
+    </appender>
+    <appender name="PartnerFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>${LOG_PATH}/${PARTNER_FILE}</File>
+        <!--<Append>true</Append>-->
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %level %X{IDENTIFIER}%thread %X{URI}
+                %logger[%method:%line] - %msg%n
+            </pattern>
+            <charset>utf8</charset>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>DEBUG</level>
+        </filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/${PARTNER_FILE}.%d{yyyy-MM-dd }</fileNamePattern>
+        </rollingPolicy>
+    </appender>
+    <appender name="MVC" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>${LOG_PATH}/${MVC_FILE}</File>
+        <!--<Append>true</Append>-->
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %level %X{URI} shopId=%X{shopId} brandId=%X{brandId}
+                %logger[%method:%line] - %msg%n
+            </pattern>
+            <charset>utf8</charset>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>DEBUG</level>
+        </filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/${MVC_FILE}.%d{yyyy-MM-dd }</fileNamePattern>
+        </rollingPolicy>
+    </appender>
+    <!---->
+    <logger name="org.springframework" level="INFO"/>
+    <!---->
+    <logger name="org.apache" level="INFO"/>
+    <!--<logger name="com.netflix" level="DEBUG"/>-->
+    <!--<logger name="org.apache.zookeeper" level="DEBUG"/>-->
+    <!--<logger name="org.apache.curator" level="INFO"/>-->
+    <!--<logger name="org.springframework" level="INFO"/>-->
+    <!--<logger name="org.apache" level="INFO"/>-->
+    <!--<logger name="com.alibaba.druid" level="DEBUG"/>-->
+    <!--<logger name="com.keruyun.commons" level="INFO"/>-->
+    <logger name="com.keruyun.portal" level="INFO"/>
+    <logger name="org.mongodb" level="INFO"/>
+    <logger name="PartnerRequest" level="INFO" additivity="false">
+        <appender-ref ref="PartnerFile"/>
+    </logger>
+    <logger name="MVCLOG" level="INFO" additivity="false">
+        <appender-ref ref="MVC"/>
+    </logger>
+    <root level="INFO">
+        <appender-ref ref="Console"/>
+        <appender-ref ref="LogFile"/>
+        <appender-ref ref="ErrorFile"/>
+    </root>
+</configuration>
+

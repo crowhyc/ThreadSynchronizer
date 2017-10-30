@@ -1,0 +1,9 @@
+common:
+  swagger:
+    enabled: true
+    api-info:
+      title: Javanewb-session-async
+      version: 1.0.0
+      description: Javanewb-session-async项目
+    path-regex: /.*
+    basePackage: com.javanewb

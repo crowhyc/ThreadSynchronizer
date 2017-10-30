@@ -2,3 +2,5 @@
 .idea
 AyncSessionDemo.i*
 /target
+*.log
+/logs

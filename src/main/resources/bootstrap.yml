@@ -1,0 +1,97 @@
+spring:
+  application:
+    name: javanewb-session-async
+  profiles:
+    active: ${profile.active}, mongodb,config
+  cloud:
+    zookeeper:
+      connectString: localhost:2181,localhost:2181
+      enabled: true
+      config:
+        enabled: true
+        root: /configurations/on_portal/${profile.active}
+        defaultContext: apps
+        profileSeparator: ':'
+
+server:
+  port: ${${spring.application.name}.port:8080}
+  context-path: /
+  tomcat:
+    max-threads: 200
+info.version: ${project.version}
+info.artifactId: ${project.artifactId}
+info.appName: ${spring.application.name}
+info.active: ${profile.active}
+endpoints:
+  enabled: true
+  info:
+    enabled: true
+  health:
+    enabled: true
+hystrix:
+  threadpool:
+    default:
+
+      coreSize: 50
+      maxQueueSize: 100
+      queueSizeRejectionThreshold: 100
+hystrix.command.default.execution.isolation.thread.timeoutInMilliseconds: 60000
+management:
+  add-application-context-header: true
+  health:
+    redis:
+      enabled: false
+
+---
+spring:
+  profiles: local
+  cloud:
+    zookeeper:
+      connectString: localhost:2181,localhost:2181
+
+---
+spring:
+  profiles: dev
+  cloud:
+    zookeeper:
+      connectString: testzk1.shishike.com:2181,testzk2.shishike.com:2181,testzk3.shishike.com:2181
+
+---
+spring:
+  profiles: test
+  cloud:
+    zookeeper:
+      connectString: testzk1.shishike.com:2181,testzk2.shishike.com:2181,testzk3.shishike.com:2181
+
+---
+spring:
+  profiles: gld
+  cloud:
+    zookeeper:
+      connectString: gld.zk1.cnhz.keruyun.com:2181,gld.zk2.cnhz.keruyun.com:2181,gld.zk3.cnhz.keruyun.com:2181
+
+---
+spring:
+  profiles: prod
+  cloud:
+    zookeeper:
+      connectString: zk1.keruyun.com:2181,zk2.keruyun.com:2181,zk3.keruyun.com:2181,zk4.keruyun.com:2181,zk5.keruyun.com:2181
+
+---
+spring:
+  profiles: citest
+  cloud:
+   zookeeper:
+     connectString: ci.zk1.cnhz.shishike.com:2181,ci.zk2.cnhz.shishike.com:2181,ci.zk3.cnhz.shishike.com:2181
+---
+spring:
+  profiles: lt
+  cloud:
+   zookeeper:
+     connectString: lt.zk1.cnhz.shishike.com,lt.zk2.cnhz.shishike.com,lt.zk3.cnhz.shishike.com
+---
+spring:
+  profiles: vpcprod
+  cloud:
+   zookeeper:
+     connectString: vpcprod.zk1.cnhz.keruyun.com,vpcprod.zk2.cnhz.keruyun.com,vpcprod.zk3.cnhz.keruyun.com,vpcprod.zk4.cnhz.keruyun.com,vpcprod.zk5.cnhz.keruyun.com
