@@ -6,6 +6,7 @@ import com.keruyun.portal.common.util.StringUtil;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * <p>
@@ -23,12 +24,14 @@ import java.util.concurrent.*;
  */
 public class RequestHolder<T> {
     private Integer maxSize;
+    private Long waitTime;
 
-    public RequestHolder(Integer maxSize, ExecutorService executorService) {
+    public RequestHolder(Integer maxSize, Long maxWait, ExecutorService executorService) {
         if (maxSize > 1000) {
             throw new BusinessException(1022, "Bigger than max size num");
         }
         this.maxSize = maxSize;
+        this.waitTime = maxWait;
         if (executorService != null) {
             this.executorService = executorService;
         } else {
@@ -36,10 +39,11 @@ public class RequestHolder<T> {
         }
     }
 
-    public RequestHolder(Integer maxSize) {
+    public RequestHolder(Integer maxSize, Long maxWait) {
         if (maxSize > 1000) {
             throw new BusinessException(1022, "Bigger than  max size num");
         }
+        this.waitTime = maxWait;
         this.maxSize = maxSize;
         this.executorService = new ThreadPoolExecutor(Math.max(1, maxSize / 5), maxSize, 10, TimeUnit.SECONDS, new ArrayBlockingQueue<>(maxSize));
     }
@@ -47,7 +51,7 @@ public class RequestHolder<T> {
     private ExecutorService executorService;
     private final Map<String, ThreadHolder<T>> holderMap = new ConcurrentHashMap<>();
     private List<String> mdcOrderList = new CopyOnWriteArrayList<>();
-    private volatile boolean isCleaning = false;
+    private AtomicBoolean isCleaning = new AtomicBoolean(false);
 
     public ThreadHolder<T> removeThread(String mdc, boolean needNotifyDefault) {
         mdcOrderList.remove(mdc);
@@ -79,6 +83,9 @@ public class RequestHolder<T> {
             ThreadHolder<T> thread = holder.newInstance();
             holderMap.put(mdcStr, thread);
             mdcOrderList.add(mdcStr);
+            thread.setMaxWaitTime(waitTime);
+            thread.setMdc(mdcStr);
+            thread.setHolder(this);
             future = executorService.submit(thread);
             cleanThreadPool();
         } catch (InstantiationException | IllegalAccessException e) {
@@ -90,14 +97,14 @@ public class RequestHolder<T> {
     }
 
     private void cleanThreadPool() {
-        if (mdcOrderList.size() >= maxSize && !isCleaning) {
-            isCleaning = true;
+        if (mdcOrderList.size() >= maxSize && !isCleaning.get()) {
+            isCleaning.set(true);
             try {
                 mdcOrderList.subList(0, mdcOrderList.size() - maxSize).forEach(//看测试效率,看是否用并行stream处理
                         mdc -> removeThread(mdc, true)
                 );
             } finally {
-                isCleaning = false;
+                isCleaning.set(false);
             }
         }
     }

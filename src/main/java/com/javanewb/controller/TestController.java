@@ -1,6 +1,5 @@
 package com.javanewb.controller;
 
-import com.javanewb.consts.DefaultValues;
 import com.javanewb.entity.TestThreadHolder;
 import com.javanewb.thread.tools.RequestHolder;
 import com.keruyun.portal.common.filter.LoggerMDCFilter;
@@ -43,7 +42,7 @@ public class TestController {
     private HttpClientComponent httpClientComponent;
     ExecutorService executorService = new ThreadPoolExecutor(300, 10000, 10000, TimeUnit.SECONDS, new ArrayBlockingQueue<>(200));
     ExecutorService batchService = new ThreadPoolExecutor(300, 10000, 10000, TimeUnit.SECONDS, new ArrayBlockingQueue<>(200));
-    private RequestHolder<String> holder = new RequestHolder<>(100);
+    private RequestHolder<String> holder = new RequestHolder<>(100, 5000L);
     private List<String> mdcList = new ArrayList<>();
 
     @ApiOperation(value = "请求同步测试", notes = "请求同步测试")
@@ -55,19 +54,10 @@ public class TestController {
         Future<String> future = holder.getFuture(mdc, TestThreadHolder.class);
         log.info(Thread.currentThread().getName());
         try {
-            String result = future.get(4500, TimeUnit.SECONDS);
+            String result = future.get();
             response.getOutputStream().print(result);
             System.out.println(" time: " + (System.currentTimeMillis() - startTime));
-        } catch (IOException | ExecutionException e) {
-            e.printStackTrace();
-        } catch (TimeoutException e) {
-            try {
-                response.getOutputStream().print(DefaultValues.DEFAULT_VAL);
-                System.out.println(" time: " + (System.currentTimeMillis() - startTime));
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            }
-        } catch (InterruptedException e) {
+        } catch (IOException | ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }
     }
