@@ -16,5 +16,5 @@ package com.javanewb.consts;
  */
 public class DefaultValues {
 
-    public static final String DEFAULT_VAL = "{'result':'success'}";
+    public static final String DEFAULT_VAL = "{'result':'failed'}";
 }

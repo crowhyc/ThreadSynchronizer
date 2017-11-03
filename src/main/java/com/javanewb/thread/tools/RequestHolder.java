@@ -1,0 +1,107 @@
+package com.javanewb.thread.tools;
+
+import com.keruyun.portal.common.exception.BusinessException;
+import com.keruyun.portal.common.util.StringUtil;
+
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.*;
+
+/**
+ * <p>
+ * Description: com.javanewb.entity
+ * </p>
+ * <p>
+ * Copyright: Copyright (c) 2015
+ * </p>
+ * <p>
+ * Company: 客如云
+ * </p>
+ * date：2017/10/26
+ *
+ * @author Dean.Hwang
+ */
+public class RequestHolder<T> {
+    private Integer maxSize;
+
+    public RequestHolder(Integer maxSize, ExecutorService executorService) {
+        if (maxSize > 1000) {
+            throw new BusinessException(1022, "Bigger than max size num");
+        }
+        this.maxSize = maxSize;
+        if (executorService != null) {
+            this.executorService = executorService;
+        } else {
+            this.executorService = new ThreadPoolExecutor(Math.max(1, maxSize / 5), maxSize, 10, TimeUnit.SECONDS, new ArrayBlockingQueue<>(maxSize));
+        }
+    }
+
+    public RequestHolder(Integer maxSize) {
+        if (maxSize > 1000) {
+            throw new BusinessException(1022, "Bigger than  max size num");
+        }
+        this.maxSize = maxSize;
+        this.executorService = new ThreadPoolExecutor(Math.max(1, maxSize / 5), maxSize, 10, TimeUnit.SECONDS, new ArrayBlockingQueue<>(maxSize));
+    }
+
+    private ExecutorService executorService;
+    private final Map<String, ThreadHolder<T>> holderMap = new ConcurrentHashMap<>();
+    private List<String> mdcOrderList = new CopyOnWriteArrayList<>();
+    private volatile boolean isCleaning = false;
+
+    public ThreadHolder<T> removeThread(String mdc, boolean needNotifyDefault) {
+        mdcOrderList.remove(mdc);
+        ThreadHolder<T> holder;
+        synchronized (holderMap) {
+            holder = holderMap.get(mdc);
+            holderMap.remove(mdc);
+        }
+        if (holder != null && needNotifyDefault) {
+            holder.notifyDefault();
+        }
+        return holder;
+    }
+
+    public void notifyThread(String mdc, Object data) {
+        ThreadHolder<T> holder = removeThread(mdc, false);
+        if (holder != null) {
+            holder.notifyThread(data);
+        }
+    }
+
+
+    public Future<T> getFuture(String mdcStr, Class<? extends ThreadHolder<T>> holder) {
+        if (StringUtil.isEmpty(mdcStr) || holder == null) {
+            throw new BusinessException(1020, "Mdc target missing!!!");
+        }
+        Future<T> future;
+        try {
+            ThreadHolder<T> thread = holder.newInstance();
+            holderMap.put(mdcStr, thread);
+            mdcOrderList.add(mdcStr);
+            future = executorService.submit(thread);
+            cleanThreadPool();
+        } catch (InstantiationException | IllegalAccessException e) {
+            holderMap.remove(mdcStr);
+            mdcOrderList.remove(mdcStr);
+            throw new BusinessException(1021, "Thread Holder initialized failed");
+        }
+        return future;
+    }
+
+    private void cleanThreadPool() {
+        if (mdcOrderList.size() >= maxSize && !isCleaning) {
+            isCleaning = true;
+            try {
+                mdcOrderList.subList(0, mdcOrderList.size() - maxSize).forEach(//看测试效率,看是否用并行stream处理
+                        mdc -> removeThread(mdc, true)
+                );
+            } finally {
+                isCleaning = false;
+            }
+        }
+    }
+}
+
+
+
