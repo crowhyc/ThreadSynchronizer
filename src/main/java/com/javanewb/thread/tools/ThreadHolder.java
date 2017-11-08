@@ -32,6 +32,7 @@ public abstract class ThreadHolder<T> implements Callable<T> {
     @Override
     public T call() throws Exception {
         waitThread();
+        System.out.println("Thread mdc:" + mdc + "  notify");
         if (needProData == null) {
             holder.removeThread(mdc, false);
             return defaultData;

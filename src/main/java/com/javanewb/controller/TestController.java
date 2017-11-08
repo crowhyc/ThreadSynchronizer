@@ -42,7 +42,7 @@ public class TestController {
     private HttpClientComponent httpClientComponent;
     ExecutorService executorService = new ThreadPoolExecutor(300, 10000, 10000, TimeUnit.SECONDS, new ArrayBlockingQueue<>(200));
     ExecutorService batchService = new ThreadPoolExecutor(300, 10000, 10000, TimeUnit.SECONDS, new ArrayBlockingQueue<>(200));
-    private RequestHolder<String> holder = new RequestHolder<>(100, 5000L);
+    private RequestHolder<String> holder = new RequestHolder<>(100, 500000L);
     private List<String> mdcList = new ArrayList<>();
 
     @ApiOperation(value = "请求同步测试", notes = "请求同步测试")
@@ -54,6 +54,7 @@ public class TestController {
         Future<String> future = holder.getFuture(mdc, TestThreadHolder.class);
         log.info(Thread.currentThread().getName());
         try {
+            System.out.println(mdc + " Thread Wait");
             String result = future.get();
             response.getOutputStream().print(result);
             System.out.println(" time: " + (System.currentTimeMillis() - startTime));
@@ -64,10 +65,25 @@ public class TestController {
 
     @ApiOperation(value = "释放list第一个", notes = "请求同步测试")
     @RequestMapping(value = "/notify", method = RequestMethod.GET)
-    public void notifyFirst() {
+    public String notifyFirst() {
         String mdc = mdcList.get(0);
         mdcList.remove(0);
         holder.notifyThread(mdc, "");
+        return mdc;
     }
 
+    @ApiOperation(value = "释放list第一个", notes = "请求同步测试")
+    @RequestMapping(value = "/notifyThis", method = RequestMethod.GET)
+    public String notifyThis(String mdc) {
+        int idx = 0;
+        for (int i = 0; i < mdcList.size(); i++) {
+            if (mdcList.get(i).equals(mdc)) {
+                idx = i;
+                break;
+            }
+        }
+        mdcList.remove(idx);
+        holder.notifyThread(mdc, "");
+        return mdc;
+    }
 }
