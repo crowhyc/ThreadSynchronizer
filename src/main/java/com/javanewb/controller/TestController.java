@@ -38,20 +38,16 @@ import java.util.concurrent.*;
 @RestController
 @Slf4j
 public class TestController {
-    @Autowired
-    private HttpClientComponent httpClientComponent;
-    ExecutorService executorService = new ThreadPoolExecutor(300, 10000, 10000, TimeUnit.SECONDS, new ArrayBlockingQueue<>(200));
-    ExecutorService batchService = new ThreadPoolExecutor(300, 10000, 10000, TimeUnit.SECONDS, new ArrayBlockingQueue<>(200));
     private RequestHolder<String> holder = new RequestHolder<>(100, 500000L);
     private List<String> mdcList = new ArrayList<>();
 
     @ApiOperation(value = "请求同步测试", notes = "请求同步测试")
     @RequestMapping(value = "/async", method = RequestMethod.GET)
-    public void async(HttpServletRequest request, HttpServletResponse response) {
+    public void async(HttpServletRequest request, HttpServletResponse response,String id) {
         Long startTime = System.currentTimeMillis();
         String mdc = MDC.get(LoggerMDCFilter.IDENTIFIER);
         mdcList.add(mdc);
-        Future<String> future = holder.getFuture(mdc, TestThreadHolder.class);
+        Future<String> future = holder.getFuture(id, TestThreadHolder.class);
         log.info(Thread.currentThread().getName());
         try {
             System.out.println(mdc + " Thread Wait");
