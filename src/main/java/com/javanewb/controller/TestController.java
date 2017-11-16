@@ -79,8 +79,8 @@ public class TestController {
         }
         if (mdcList.size() > 0) {
             mdcList.remove(idx);
-            holder.notifyThread(mdc, "");
         }
+        holder.notifyThread(mdc, "");
         return mdc;
     }
 }
