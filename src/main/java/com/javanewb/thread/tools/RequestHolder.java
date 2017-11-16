@@ -2,6 +2,7 @@ package com.javanewb.thread.tools;
 
 import com.keruyun.portal.common.exception.BusinessException;
 import com.keruyun.portal.common.util.StringUtil;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 import java.util.Map;
@@ -22,6 +23,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  *
  * @author Dean.Hwang
  */
+@Slf4j
 public class RequestHolder<T> {
     private Integer maxSize;
     private Long waitTime;
@@ -70,6 +72,7 @@ public class RequestHolder<T> {
         ThreadHolder<T> holder = removeThread(mdc, false);
         if (holder != null) {
             holder.notifyThread(data);
+            log.info("Block pool has thread num:{} ", mdcOrderList.size());
         }
     }
 
