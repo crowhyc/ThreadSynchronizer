@@ -43,16 +43,13 @@ public class TestController {
     @ApiOperation(value = "请求同步测试", notes = "请求同步测试")
     @RequestMapping(value = "/async", method = RequestMethod.GET)
     public void async(HttpServletRequest request, HttpServletResponse response, String id) {
-        Long startTime = System.currentTimeMillis();
         String mdc = MDC.get(LoggerMDCFilter.IDENTIFIER);
         mdcList.add(mdc);
         Future<String> future = holder.getFuture(id, TestThreadHolder.class);
         log.info(Thread.currentThread().getName());
         try {
-            System.out.println(mdc + " Thread Wait");
             String result = future.get();
             response.getOutputStream().print(result);
-            System.out.println(" time: " + (System.currentTimeMillis() - startTime));
         } catch (IOException | ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }
