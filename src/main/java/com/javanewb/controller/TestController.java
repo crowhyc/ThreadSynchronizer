@@ -3,12 +3,10 @@ package com.javanewb.controller;
 import com.javanewb.entity.TestThreadHolder;
 import com.javanewb.thread.tools.RequestHolder;
 import com.keruyun.portal.common.filter.LoggerMDCFilter;
-import com.keruyun.portal.common.http.HttpClientComponent;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,7 +16,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.*;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 /**
  * <p>
@@ -43,7 +42,7 @@ public class TestController {
 
     @ApiOperation(value = "请求同步测试", notes = "请求同步测试")
     @RequestMapping(value = "/async", method = RequestMethod.GET)
-    public void async(HttpServletRequest request, HttpServletResponse response,String id) {
+    public void async(HttpServletRequest request, HttpServletResponse response, String id) {
         Long startTime = System.currentTimeMillis();
         String mdc = MDC.get(LoggerMDCFilter.IDENTIFIER);
         mdcList.add(mdc);
