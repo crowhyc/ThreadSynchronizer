@@ -1,8 +1,8 @@
 package com.javanewb.controller;
 
+import com.javanewb.common.filter.LoggerMDCFilter;
 import com.javanewb.entity.TestThreadHolder;
 import com.javanewb.thread.tools.RequestHolder;
-import com.keruyun.portal.common.filter.LoggerMDCFilter;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -23,12 +23,7 @@ import java.util.concurrent.Future;
  * <p>
  * Description: com.javanewb.controller
  * </p>
- * <p>
- * Copyright: Copyright (c) 2015
- * </p>
- * <p>
- * Company: 客如云
- * </p>
+
  * date：2017/10/25
  *
  * @author Dean.Hwang

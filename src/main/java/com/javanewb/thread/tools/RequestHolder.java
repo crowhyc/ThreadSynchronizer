@@ -1,7 +1,7 @@
 package com.javanewb.thread.tools;
 
-import com.keruyun.portal.common.exception.BusinessException;
-import com.keruyun.portal.common.util.StringUtil;
+import com.javanewb.common.exception.BusinessException;
+import com.javanewb.common.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
@@ -13,12 +13,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * <p>
  * Description: com.javanewb.entity
  * </p>
- * <p>
- * Copyright: Copyright (c) 2015
- * </p>
- * <p>
- * Company: 客如云
- * </p>
+
  * date：2017/10/26
  *
  * @author Dean.Hwang

@@ -8,12 +8,7 @@ import java.util.concurrent.Callable;
  * <p>
  * Description: com.javanewb.service
  * </p>
- * <p>
- * Copyright: Copyright (c) 2015
- * </p>
- * <p>
- * Company: 客如云
- * </p>
+
  * date：2017/10/31
  *
  * @author Dean.Hwang
