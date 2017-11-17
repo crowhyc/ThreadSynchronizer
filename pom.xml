@@ -11,7 +11,7 @@
     <packaging>jar</packaging>
     <version>1.0-SNAPSHOT</version>
     <name>ThreadSynchronizer</name>
-    <url>http://maven.apache.org</url>
+    <url>http://www.javanewb.com</url>
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
@@ -20,67 +20,11 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>com.keruyun.portal</groupId>
+            <groupId>com.javanewb.common</groupId>
             <artifactId>starter-web</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.3.2</version>
-                <configuration>
-                    <!--指定JDK版本-->
-                    <source>1.8</source>
-                    <target>1.8</target>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>com.keruyun.cloud.infra</groupId>
-                <artifactId>spring-boot-maven-oneapm-plugin</artifactId>
-            </plugin>
-
-        </plugins>
-    </build>
-    <repositories>
-        <repository>
-            <id>kry-nexus</id>
-            <url>http://nexus.shishike.com/nexus/content/repositories/releases/</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-        </repository>
-
-        <repository>
-            <id>kry-nexus-snapshots</id>
-            <url>http://nexus.shishike.com/nexus/content/repositories/snapshots/</url>
-            <snapshots>
-                <enabled>true</enabled>
-                <updatePolicy>always</updatePolicy>
-                <checksumPolicy>warn</checksumPolicy>
-            </snapshots>
-        </repository>
-
-        <repository>
-            <id>kry-nexus-releases</id>
-            <url>http://nexus.shishike.com/nexus/content/repositories/releases/</url>
-            <snapshots>
-                <enabled>true</enabled>
-                <updatePolicy>always</updatePolicy>
-                <checksumPolicy>warn</checksumPolicy>
-            </snapshots>
-        </repository>
-        <repository>
-            <id>ali-nexus</id>
-            <url>http://maven.aliyun.com/nexus/content/groups/public/</url>
-        </repository>
-        <repository>
-            <id>ali-nexus-public-snapshots</id>
-            <url>http://maven.aliyun.com/nexus/content/repositories/snapshots/</url>
-        </repository>
-    </repositories>
     <profiles>
         <profile>
             <id>local</id>
