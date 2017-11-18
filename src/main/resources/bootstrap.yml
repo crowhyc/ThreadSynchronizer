@@ -17,7 +17,7 @@ server:
   port: ${${spring.application.name}.port:8080}
   context-path: /
   tomcat:
-    max-threads: 200
+    max-threads: 1000
 info.version: ${project.version}
 info.artifactId: ${project.artifactId}
 info.appName: ${spring.application.name}
@@ -32,9 +32,9 @@ hystrix:
   threadpool:
     default:
 
-      coreSize: 50
-      maxQueueSize: 100
-      queueSizeRejectionThreshold: 100
+      coreSize: 1000
+      maxQueueSize: 1000
+      queueSizeRejectionThreshold: 1000
 hystrix.command.default.execution.isolation.thread.timeoutInMilliseconds: 60000
 management:
   add-application-context-header: true

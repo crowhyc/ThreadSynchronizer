@@ -14,8 +14,9 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
@@ -23,7 +24,7 @@ import java.util.concurrent.Future;
  * <p>
  * Description: com.javanewb.controller
  * </p>
-
+ * <p>
  * date：2017/10/25
  *
  * @author Dean.Hwang
@@ -32,14 +33,15 @@ import java.util.concurrent.Future;
 @RestController
 @Slf4j
 public class TestController {
-    private RequestHolder<String> holder = new RequestHolder<>(100, 500000L);
-    private List<String> mdcList = new ArrayList<>();
+    private RequestHolder<String> holder = new RequestHolder<>(1000, 8000L);
+    private List<String> mdcList = new CopyOnWriteArrayList<>();
+    private Random random = new Random();
 
     @ApiOperation(value = "请求同步测试", notes = "请求同步测试")
     @RequestMapping(value = "/async", method = RequestMethod.GET)
     public void async(HttpServletRequest request, HttpServletResponse response, String id) {
         String mdc = MDC.get(LoggerMDCFilter.IDENTIFIER);
-        mdcList.add(mdc);
+        mdcList.add(id);
         Future<String> future = holder.getFuture(id, TestThreadHolder.class);
         log.info(Thread.currentThread().getName());
         try {
@@ -52,11 +54,14 @@ public class TestController {
 
     @ApiOperation(value = "释放list第一个", notes = "请求同步测试")
     @RequestMapping(value = "/notify", method = RequestMethod.GET)
-    public String notifyFirst() {
-        String mdc = mdcList.get(0);
-        mdcList.remove(0);
+    public String notifyRandom() {
+        String mdc = getMdc();
+        if (mdc == null) {
+            return "{\"result\":\"empty pool\"}";
+
+        }
         holder.notifyThread(mdc, "");
-        return mdc;
+        return "{\"result\":\"" + mdc + "\"}";
     }
 
     @ApiOperation(value = "释放list第一个", notes = "请求同步测试")
@@ -73,6 +78,16 @@ public class TestController {
             mdcList.remove(idx);
         }
         holder.notifyThread(mdc, "");
+        return mdc;
+    }
+
+    private synchronized String getMdc() {
+        if (mdcList.size() == 0) {
+            return null;
+        }
+        Integer idx = random.nextInt(mdcList.size());
+        String mdc = mdcList.get(idx);
+        mdcList.remove(mdc);
         return mdc;
     }
 }

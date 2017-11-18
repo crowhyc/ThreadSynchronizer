@@ -40,4 +40,33 @@
             </properties>
         </profile>
     </profiles>
+    <repositories>
+        <repository>
+            <id>ali-nexus</id>
+            <url>http://maven.aliyun.com/nexus/content/groups/public/</url>
+        </repository>
+        <repository>
+            <id>ali-nexus-public-snapshots</id>
+            <url>http://maven.aliyun.com/nexus/content/repositories/snapshots/</url>
+        </repository>
+
+        <repository>
+            <id>javanewb-nexus</id>
+            <url>http://x.javanewb.com/nexus/content/repositories/releases/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </repository>
+
+        <repository>
+            <id>javanewb-nexus-snapshots</id>
+            <url>http://x.javanewb.com/nexus/content/repositories/snapshots/</url>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+                <checksumPolicy>warn</checksumPolicy>
+            </snapshots>
+        </repository>
+
+    </repositories>
 </project>
