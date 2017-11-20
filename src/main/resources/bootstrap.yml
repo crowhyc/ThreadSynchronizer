@@ -9,7 +9,7 @@ spring:
       enabled: true
       config:
         enabled: true
-        root: /configurations/on_portal/${profile.active}
+        root: /configurations/javanewb/${profile.active}
         defaultContext: apps
         profileSeparator: ':'
 
