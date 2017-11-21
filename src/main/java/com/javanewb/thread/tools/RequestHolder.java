@@ -13,7 +13,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * <p>
  * Description: com.javanewb.entity
  * </p>
-
+ * <p>
  * date：2017/10/26
  *
  * @author Dean.Hwang
@@ -95,8 +95,7 @@ public class RequestHolder<T> {
     }
 
     private void cleanThreadPool() {
-        if (mdcOrderList.size() >= maxSize && !isCleaning.get()) {
-            isCleaning.set(true);
+        if (mdcOrderList.size() >= maxSize && !isCleaning.compareAndSet(false, true)) {
             try {
                 mdcOrderList.subList(0, mdcOrderList.size() - maxSize).forEach(//看测试效率,看是否用并行stream处理
                         mdc -> removeThread(mdc, true)
